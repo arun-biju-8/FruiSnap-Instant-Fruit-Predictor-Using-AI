@@ -1,0 +1,9 @@
+venv/
+venv310/
+__pycache__/
+*.pyc
+.env
+
+fruit_model/
+*.h5
+*.weights.h5
