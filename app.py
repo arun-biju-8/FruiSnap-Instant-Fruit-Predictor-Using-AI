@@ -1,4 +1,3 @@
-```python
 from flask import Flask, render_template, request
 import tensorflow as tf
 from PIL import Image
@@ -7,45 +6,58 @@ import gdown
 import os
 
 # =========================
-# DOWNLOAD MODEL (if not exists)
-# =========================
-MODEL_PATH = "weights.weights.h5"
-
-if not os.path.exists(MODEL_PATH):
-    url = "https://drive.google.com/uc?id=1z2Bf6hPvq-nR3GeRLeyr3GN-PSo-JDUE"
-    print("Downloading model...")
-    gdown.download(url, MODEL_PATH, quiet=False)
-    print("Download complete ✅")
-
-# =========================
 # FLASK APP
 # =========================
 app = Flask(__name__)
 
 # =========================
-# BUILD MODEL ARCHITECTURE
+# MODEL PATH
 # =========================
-model = tf.keras.Sequential([
-    tf.keras.Input(shape=(224, 224, 3)),
-    tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
-
-    tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
-
-    tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
-    tf.keras.layers.MaxPooling2D(2, 2),
-
-    tf.keras.layers.Flatten(),
-    tf.keras.layers.Dense(128, activation='relu'),
-    tf.keras.layers.Dense(1, activation='sigmoid')
-])
+MODEL_PATH = "weights.weights.h5"
 
 # =========================
-# LOAD WEIGHTS
+# DOWNLOAD MODEL (if not exists)
 # =========================
-model.load_weights(MODEL_PATH)
-print("Model loaded successfully ✅")
+if not os.path.exists(MODEL_PATH):
+    url = "https://drive.google.com/uc?id=1z2Bf6hPvq-nR3GeRLeyr3GN-PSo-JDUE"
+    print("Downloading model...")
+    gdown.download(url, MODEL_PATH, quiet=False)
+    print("Download complete ✅")
+else:
+    print("Model already exists ✅")
+
+# =========================
+# LAZY LOAD MODEL
+# =========================
+model = None
+
+def get_model():
+    global model
+    if model is None:
+        print("Loading model...")
+
+        model_local = tf.keras.Sequential([
+            tf.keras.Input(shape=(224, 224, 3)),
+            tf.keras.layers.Conv2D(32, (3, 3), activation='relu'),
+            tf.keras.layers.MaxPooling2D(2, 2),
+
+            tf.keras.layers.Conv2D(64, (3, 3), activation='relu'),
+            tf.keras.layers.MaxPooling2D(2, 2),
+
+            tf.keras.layers.Conv2D(128, (3, 3), activation='relu'),
+            tf.keras.layers.MaxPooling2D(2, 2),
+
+            tf.keras.layers.Flatten(),
+            tf.keras.layers.Dense(128, activation='relu'),
+            tf.keras.layers.Dense(1, activation='sigmoid')
+        ])
+
+        model_local.load_weights(MODEL_PATH)
+        print("Model loaded successfully ✅")
+
+        model = model_local
+
+    return model
 
 # =========================
 # CLASS LABELS
@@ -74,6 +86,8 @@ def index():
         img = Image.open(file)
 
         processed = preprocess(img)
+
+        model = get_model()  # ✅ lazy load here
         pred = model.predict(processed)
 
         confidence_val = float(pred[0][0])
@@ -93,10 +107,9 @@ def index():
                            confidence=confidence)
 
 # =========================
-# RUN APP
+# RUN APP (LOCAL ONLY)
 # =========================
 if __name__ == "__main__":
-    port = int(os.environ.get("PORT", 5000))
+    port = int(os.environ.get("PORT", 10000))
     print("Starting Flask server...")
     app.run(host="0.0.0.0", port=port)
-```
