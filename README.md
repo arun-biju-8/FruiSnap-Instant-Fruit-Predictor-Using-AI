@@ -65,7 +65,7 @@ FruiSnap is a modern AI-powered web application that detects fruits from images 
 ## 🧑‍💻 Author
 
 **Arun Akkadan**  
-BCA Student | AI Enthusiast 🚀
+MCA Student | AI Enthusiast 🚀
 
 ---
 
@@ -74,10 +74,15 @@ BCA Student | AI Enthusiast 🚀
 - Add more fruits 🍌🍇🍍  
 - Improve model accuracy  
 - Add real-time camera detection 📷  
-- Convert to mobile app 📱  
+- Convert to mobile app 📱
+- Chatbot
+- What can be done with that fruit
+- Nutrition facts
+- Recipes
+- AR Virtulaisation  
 
 ---
 
 ## ⭐ Inspiration
 
-Built as part of my journey into Machine Learning and AI deployment.
+Built as part of my journey into Machine Learning and Artificial Intelligence, this project represents a comprehensive effort to design, develop, and deploy intelligent systems capable of solving real-world problems. It reflects my growing expertise in transforming theoretical concepts into practical applications by integrating data-driven models with scalable backend systems and modern, interactive web interfaces. The project emphasizes not only predictive accuracy but also user experience, demonstrating my ability to combine advanced machine learning techniques with visually engaging and intuitive front-end design to create a complete, production-ready solution.
