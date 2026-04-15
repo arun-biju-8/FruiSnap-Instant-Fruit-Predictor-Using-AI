@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FruiSnap AI</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+
+<style>
+body {
+    margin: 0;
+    overflow: hidden;
+    font-family: 'Segoe UI', sans-serif;
+    color: white;
+}
+
+/* Background */
+#bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    z-index: -2;
+}
+
+/* Overlay gradient */
+.overlay {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(0,0,0,0.2), #000);
+    z-index: -1;
+}
+
+/* Main container */
+.main {
+    position: relative;
+    padding: 40px 20px;
+    text-align: center;
+}
+
+/* Hero */
+.hero {
+    margin-top: 60px;
+}
+
+.hero h1 {
+    font-size: 36px;
+}
+
+.hero p {
+    color: rgba(255,255,255,0.7);
+}
+
+/* Glass cards */
+.card {
+    margin: 20px auto;
+    max-width: 700px;
+    padding: 25px;
+
+    background: rgba(255,255,255,0.05);
+    backdrop-filter: blur(15px);
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+
+    box-shadow: 0 0 30px rgba(255,255,255,0.05);
+
+    text-align: left;
+}
+
+/* Grid */
+.grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 15px;
+}
+
+/* Button */
+.btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 12px 20px;
+    background: #00c6ff;
+    border-radius: 10px;
+    color: white;
+    text-decoration: none;
+}
+
+.btn:hover {
+    background: #0072ff;
+}
+
+/* Text */
+h2 {
+    margin-bottom: 10px;
+}
+
+p, li {
+    color: rgba(255,255,255,0.85);
+}
+
+/* Scroll */
+html, body {
+    height: auto;
+    overflow-y: auto;
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+<div class="overlay"></div>
+
+<div class="main">
+
+<!-- HERO -->
+<div class="hero">
+    <h1>🍎 FruiSnap AI</h1>
+    <p>Instant Fruit Detection powered by AI & 3D Visualization</p>
+    <a href="https://fruit-predictor-k3vh.onrender.com" class="btn">Try Live Demo</a>
+</div>
+
+<!-- FEATURES -->
+<div class="card">
+    <h2>🚀 Features</h2>
+    <ul>
+        <li>🧠 AI-based classification</li>
+        <li>🧊 3D fruit visualization</li>
+        <li>🌌 Animated UI</li>
+        <li>📱 Mobile responsive</li>
+    </ul>
+</div>
+
+<!-- TECH -->
+<div class="card">
+    <h2>🛠 Tech Stack</h2>
+    <p>Flask • TensorFlow • Three.js • Render</p>
+</div>
+
+<!-- HOW IT WORKS -->
+<div class="card">
+    <h2>🧠 How it Works</h2>
+    <ol>
+        <li>Upload image</li>
+        <li>AI predicts fruit</li>
+        <li>3D model appears</li>
+    </ol>
+</div>
+
+<!-- AUTHOR -->
+<div class="card">
+    <h2>🧑‍💻 Author</h2>
+    <p><b>Arun Akkadan</b><br>AI Developer</p>
+</div>
+
+<!-- inspiration -->
+<div class="card">
+    <h2>🧑‍💻 Inspiration</h2>
+    <p>Built as part of my journey into Machine Learning and AI deployment.</p>
+</div>
+</div>
+
+<div class="card">
+    <h2>🧑‍💻 Future Enhancement</h2>
+    <ol>
+        <li>Add more fruits</li>
+        <li>improve model accuracy</li>
+        <li>Add real-time camera detection</li>
+        <li>Mobile app version</li>
+        <li>Chatbot</li>
+        <li>What can be done with that fruit</li>
+        <li>Nutrition facts</li>
+        <li>Recipes</li>
+        <li>AR visualization</li>
+    </ol></div>
+</div>
+
+
+
+<script>
+// 🌌 STAR BACKGROUND
+const scene = new THREE.Scene();
+const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
+
+const renderer = new THREE.WebGLRenderer({
+    canvas: document.getElementById('bg')
+});
+renderer.setSize(window.innerWidth, window.innerHeight);
+
+const geometry = new THREE.BufferGeometry();
+const vertices = [];
+
+for (let i = 0; i < 3000; i++) {
+    vertices.push(
+        (Math.random() - 0.5) * 2000,
+        (Math.random() - 0.5) * 2000,
+        (Math.random() - 0.5) * 2000
+    );
+}
+
+geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+const material = new THREE.PointsMaterial({
+    color: 0xffffff,
+    size: 1.5
+});
+
+const stars = new THREE.Points(geometry, material);
+scene.add(stars);
+
+camera.position.z = 500;
+
+// 🎮 PARALLAX EFFECT
+let targetX = 0, targetY = 0;
+let currentX = 0, currentY = 0;
+
+// Track mouse
+document.addEventListener('mousemove', (e) => {
+    targetX = (e.clientX / window.innerWidth - 0.5);
+    targetY = (e.clientY / window.innerHeight - 0.5);
+});
+
+function animate() {
+    requestAnimationFrame(animate);
+
+    // Smooth movement (IMPORTANT)
+    currentX += (targetX - currentX) * 0.05;
+    currentY += (targetY - currentY) * 0.05;
+
+    // 🌌 Subtle star rotation
+    stars.rotation.y += 0.001;
+
+    // 🎮 Left-right + up-down camera movement
+    camera.position.x = currentX * 50;   // LEFT / RIGHT
+    camera.position.y = -currentY * 50;  // UP / DOWN
+
+    // 🎯 Keep looking center
+    camera.lookAt(scene.position);
+
+    // ✨ Slight star tilt (depth feel)
+    stars.rotation.x = currentY * 0.3;
+
+    renderer.render(scene, camera);
+}
+
+animate();
+
+// Resize
+window.addEventListener('resize', () => {
+    renderer.setSize(window.innerWidth, window.innerHeight);
+    camera.aspect = window.innerWidth/window.innerHeight;
+    camera.updateProjectionMatrix();
+});
+</script>
+
+</body>
+</html>

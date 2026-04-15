@@ -1,249 +1,270 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<title>FruiSnap AI</title>
+    <meta charset="UTF-8">
+    <title>FruiSnap AI</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="/static/img/fs_logo-removebg-preview.png">
 
-<!-- THREE JS -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/loaders/OBJLoader.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/loaders/MTLLoader.js"></script>
 
-<style>
-body {
-    margin: 0;
-    overflow: hidden;
-    font-family: 'Segoe UI', sans-serif;
-    color: white;
-    background: black;
-}
+    <!-- THREE JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r134/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/loaders/OBJLoader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.134/examples/js/loaders/MTLLoader.js"></script>
 
-/* Background */
-#bg {
-    position: fixed;
-    top: 0;
-    left: 0;
-    z-index: -1;
-    width: 100%;
-    height: 100%;
-}
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Segoe UI', sans-serif;
+            color: white;
+            background: black;
+        }
 
-/* Card */
-.container {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    
-    width: 90%;
-    max-width: 350px;
-    padding: 25px;
+        /* Background */
+        #bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+        }
 
-    background: rgba(255,255,255,0.05);
-    backdrop-filter: blur(20px);
-    border-radius: 20px;
-    border: 1px solid rgba(255,255,255,0.1);
+        /* Card */
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
 
-    text-align: center;
-}
+            width: 90%;
+            max-width: 350px;
+            padding: 25px;
 
-.upload-box {
-    border: 2px dashed rgba(255,255,255,0.3);
-    padding: 15px;
-    border-radius: 15px;
-    cursor: pointer;
-}
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
 
-.upload-box:hover {
-    background: rgba(255,255,255,0.05);
-}
+            text-align: center;
+        }
 
-input[type="file"] {
-    display: none;
-}
+        .upload-box {
+            border: 2px dashed rgba(255, 255, 255, 0.3);
+            padding: 15px;
+            border-radius: 15px;
+            cursor: pointer;
+        }
 
-button {
-    background: #00c6ff;
-    border: none;
-    padding: 10px 18px;
-    border-radius: 10px;
-    color: white;
-    cursor: pointer;
-    margin-top: 10px;
-}
+        .upload-box:hover {
+            background: rgba(255, 255, 255, 0.05);
+        }
 
-button:hover {
-    background: #0072ff;
-}
+        input[type="file"] {
+            display: none;
+        }
 
-img {
-    margin-top: 10px;
-    max-width: 100%;
-    border-radius: 10px;
-}
+        button {
+            background: #00c6ff;
+            border: none;
+            padding: 10px 18px;
+            border-radius: 10px;
+            color: white;
+            cursor: pointer;
+            margin-top: 10px;
+        }
 
-.result {
-    margin-top: 10px;
-    font-size: 18px;
-}
+        button:hover {
+            background: #0072ff;
+        }
 
-/* 3D model */
-#model3d {
-    margin-top: 15px;
-}
-</style>
+        img {
+            margin-top: 10px;
+            max-width: 100%;
+            border-radius: 10px;
+        }
+
+        .result {
+            margin-top: 10px;
+            font-size: 18px;
+        }
+
+        /* 3D model */
+        #model3d {
+            margin-top: 15px;
+        }
+
+        #logo {
+            position: absolute;
+            top: 10px;
+            left: 20px;
+        }
+
+        .logo {
+            height: 120px;
+            width: 225px;
+        }
+    </style>
 </head>
 
 <body>
 
-<canvas id="bg"></canvas>
+    <canvas id="bg"></canvas>
+<a href="templates/about.html">
+    <div id="logo">
+        <img class="logo" src="/static/img/fs_logo-removebg-preview.png" alt="FruiSnap Logo" width="60">
+    </div>
+</a>
+    <div class="container">
+        <h2>FruiSnap - AI Predictor</h2>
+        <br>
+        <form method="POST" enctype="multipart/form-data">
+            <label class="upload-box">
 
-<div class="container">
-    <h2>FruiSnap - AI Predictor</h2>
+                📁 Drop image or click to upload
+                <input type="file" name="file" accept="image/*" onchange="preview(event)" required>
+            </label>
+            <br><br><br>
+            <button type="submit">Predict</button>
+        </form>
 
-    <form method="POST" enctype="multipart/form-data">
-        <label class="upload-box">
-            📁 Drop image or click to upload
-            <input type="file" name="file" accept="image/*" onchange="preview(event)" required>
-        </label>
+        <img id="preview">
 
-        <button type="submit">Predict</button>
-    </form>
+        <!-- 3D MODEL -->
+        <div id="model3d"></div>
 
-    <img id="preview">
+        {% if prediction %}
+        <div class="result">
+            <strong>{{ prediction }}</strong><br>
+            {{ confidence }}% confidence
+        </div>
+        {% endif %}
+    </div>
 
-    <!-- 3D MODEL -->
-    <div id="model3d"></div>
+    <script>
+        // ================= PREVIEW =================
+        function preview(event) {
+            const reader = new FileReader();
+            reader.onload = function () {
+                document.getElementById('preview').src = reader.result;
+            }
+            reader.readAsDataURL(event.target.files[0]);
+        }
+
+        // ================= BACKGROUND STARS =================
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+        const renderer = new THREE.WebGLRenderer({
+            canvas: document.getElementById('bg')
+        });
+        renderer.setSize(window.innerWidth, window.innerHeight);
+
+        const geometry = new THREE.BufferGeometry();
+        const vertices = [];
+
+        for (let i = 0; i < 3000; i++) {
+            vertices.push(
+                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * 2000,
+                (Math.random() - 0.5) * 2000
+            );
+        }
+
+        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
+
+        const material = new THREE.PointsMaterial({
+            color: 0xffffff,
+            size: 1.5
+        });
+
+        const stars = new THREE.Points(geometry, material);
+        scene.add(stars);
+
+        camera.position.z = 500;
+
+        function animateBg() {
+            requestAnimationFrame(animateBg);
+            stars.rotation.y += 0.0005;
+            renderer.render(scene, camera);
+        }
+        animateBg();
+
+        // ================= 3D MODEL =================
+        let modelScene, modelCamera, modelRenderer, model;
+
+        function initModel() {
+            modelScene = new THREE.Scene();
+
+            modelCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
+            modelCamera.position.z = 3;
+
+            modelRenderer = new THREE.WebGLRenderer({ alpha: true });
+            modelRenderer.setSize(300, 250);
+
+            document.getElementById("model3d").appendChild(modelRenderer.domElement);
+
+            const light1 = new THREE.DirectionalLight(0xffffff, 2);
+            light1.position.set(5, 5, 5);
+            modelScene.add(light1);
+
+            const light2 = new THREE.AmbientLight(0xffffff, 1);
+            modelScene.add(light2);
+        }
+
+        function loadModel(type) {
+            if (model) {
+                modelScene.remove(model);
+            }
+
+            let objPath, mtlPath;
+
+            if (type.includes("Apple")) {
+                objPath = "/static/models/apple/apple.obj";
+                mtlPath = "/static/models/apple/apple.mtl";
+            } else {
+                objPath = "/static/models/orange/10195_Orange-L2.obj";
+                mtlPath = "/static/models/orange/10195_Orange-L2.mtl";
+            }
+
+            const mtlLoader = new THREE.MTLLoader();
+
+            mtlLoader.load(mtlPath, function (materials) {
+                materials.preload();
+
+                const objLoader = new THREE.OBJLoader();
+                objLoader.setMaterials(materials);
+
+                objLoader.load(objPath, function (object) {
+                    model = object;
+                    model.scale.set(1.2, 1.2, 1.2);
+                    modelScene.add(model);
+                });
+            });
+        }
+
+        function animateModel() {
+            requestAnimationFrame(animateModel);
+
+            if (model) {
+                model.rotation.y += 0.01;
+            }
+
+            modelRenderer.render(modelScene, modelCamera);
+        }
+
+        initModel();
+        animateModel();
+    </script>
 
     {% if prediction %}
-    <div class="result">
-        <strong>{{ prediction }}</strong><br>
-        {{ confidence }}% confidence
-    </div>
+    <script>
+        loadModel("{{ prediction }}");
+    </script>
     {% endif %}
-</div>
-
-<script>
-// ================= PREVIEW =================
-function preview(event) {
-    const reader = new FileReader();
-    reader.onload = function(){
-        document.getElementById('preview').src = reader.result;
-    }
-    reader.readAsDataURL(event.target.files[0]);
-}
-
-// ================= BACKGROUND STARS =================
-const scene = new THREE.Scene();
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-
-const renderer = new THREE.WebGLRenderer({
-    canvas: document.getElementById('bg')
-});
-renderer.setSize(window.innerWidth, window.innerHeight);
-
-const geometry = new THREE.BufferGeometry();
-const vertices = [];
-
-for (let i = 0; i < 3000; i++) {
-    vertices.push(
-        (Math.random() - 0.5) * 2000,
-        (Math.random() - 0.5) * 2000,
-        (Math.random() - 0.5) * 2000
-    );
-}
-
-geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3));
-
-const material = new THREE.PointsMaterial({
-    color: 0xffffff,
-    size: 1.5
-});
-
-const stars = new THREE.Points(geometry, material);
-scene.add(stars);
-
-camera.position.z = 500;
-
-function animateBg() {
-    requestAnimationFrame(animateBg);
-    stars.rotation.y += 0.0005;
-    renderer.render(scene, camera);
-}
-animateBg();
-
-// ================= 3D MODEL =================
-let modelScene, modelCamera, modelRenderer, model;
-
-function initModel() {
-    modelScene = new THREE.Scene();
-
-    modelCamera = new THREE.PerspectiveCamera(50, 1, 0.1, 1000);
-    modelCamera.position.z = 3;
-
-    modelRenderer = new THREE.WebGLRenderer({ alpha: true });
-    modelRenderer.setSize(300, 250);
-
-    document.getElementById("model3d").appendChild(modelRenderer.domElement);
-
-    const light1 = new THREE.DirectionalLight(0xffffff, 2);
-    light1.position.set(5,5,5);
-    modelScene.add(light1);
-
-    const light2 = new THREE.AmbientLight(0xffffff, 1);
-    modelScene.add(light2);
-}
-
-function loadModel(type) {
-    if (model) {
-        modelScene.remove(model);
-    }
-
-    let objPath, mtlPath;
-
-    if (type.includes("Apple")) {
-        objPath = "/static/models/apple/apple.obj";
-        mtlPath = "/static/models/apple/apple.mtl";
-    } else {
-        objPath = "/static/models/orange/10195_Orange-L2.obj";
-        mtlPath = "/static/models/orange/10195_Orange-L2.mtl";
-    }
-
-    const mtlLoader = new THREE.MTLLoader();
-
-    mtlLoader.load(mtlPath, function(materials) {
-        materials.preload();
-
-        const objLoader = new THREE.OBJLoader();
-        objLoader.setMaterials(materials);
-
-        objLoader.load(objPath, function(object) {
-            model = object;
-            model.scale.set(1.2, 1.2, 1.2);
-            modelScene.add(model);
-        });
-    });
-}
-
-function animateModel() {
-    requestAnimationFrame(animateModel);
-
-    if (model) {
-        model.rotation.y += 0.01;
-    }
-
-    modelRenderer.render(modelScene, modelCamera);
-}
-
-initModel();
-animateModel();
-</script>
-
-{% if prediction %}
-<script>
-    loadModel("{{ prediction }}");
-</script>
-{% endif %}
 
 </body>
+
 </html>
